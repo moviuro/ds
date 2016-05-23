@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#
+# Original Author: Moviuro
+# Distributed under the terms of the WTFPL.
+#
+# You can find a full copy of the license here:
+#      http://www.wtfpl.net/txt/copying/
+
+
+set -ex
+shopt -s nullglob
+
+# test if dialog is present
+command -v dialog >/dev/null
+
+# get the config
+source ~/.config/cbh.rc || source @sysconfigdir@/cbh.rc.sample
+
+# we get the clipboard's content. Perhaps it isn't necessary here?
+_cb_content="$(xclip -o)"
+
+# we need to loop over the stuff in the config file.
+# we also need to stop at some time.
+_max_index="${#_my_regex[@]}"
+
+# we create an associative array
+declare -gA _tagged_cmds
+
+# these will be passed to dialog(1)
+_dialog_args=()
+
+for ((_index=0; _index < _max_index; _index++)); do
+  # does our clipboard match the current regex?
+  if printf '%s' "$_cb_content" | grep -qE "${_my_regex[$_index]}"; then
+    # oh, it did!
+    # we add the "tag" and the "description" to the args for dialog(1)
+    _dialog_args+=("${_my_tag["$_index"]}")
+    _dialog_args+=("${_my_desc["$_index"]}")
+    # we add the "tag" -> "cmd" association in our assoc. array
+    _tagged_cmds["${_my_tag[$_index]}"]="${_my_cmd[$_index]}"
+  fi
+done
+
+if ((${#_dialog_args[@]} > 0)); then
+  exec 3>&1
+  # hehe, let's roll
+  _selection="$(dialog --menu "What now?" 0 0 0 "${_dialog_args[@]}" 2>&1 1>&3)"
+  exec 3>&-
+
+  clear
+
+  ${_tagged_cmds["$_selection"]} "$_cb_content"
+else
+  # sad dialog
+  dialog --title ":(" --msgbox "No regex matched '$_cb_content'" 0 0
+fi

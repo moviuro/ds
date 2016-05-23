@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+#
+
+# example regex
+ipv4='^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
+ipv6='^((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(([0-9A-Fa-f]{1,4}:){0,5}:((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(::([0-9A-Fa-f]{1,4}:){0,5}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))$'
+
+_my_regex=( # add in here a regex to match
+  "$ipv4"
+  "$ipv4"
+  "$ipv6"
+  "$ipv6"
+  '^(https?://)?(sprunge.us|ix.io)/.*$'
+  '^((ht|f)tps?://)?[^ ]*\.(jpg|png)$'
+)
+
+_my_cmd=( # at the same place as the regex, place a function name
+          # you should prefix them by `__'
+  '__ping'
+  '__namp4'
+  '__ping'
+  '__nmap6'
+  '__lesspaste'
+  '__feh'
+)
+
+_my_tag=( # must be unique!
+  'ping'
+  'nmap'
+  'ping6'
+  'nmap6'
+  'lesspaste'
+  'fehonline'
+)
+
+_my_desc=(
+  'ping(1) IPv4'
+  'nmap(1) scanner (ipv4)'
+  'ping(1) IPv6'
+  'nmap(1) scanner (ipv6)'
+  'less(1) to read the paste'
+  'feh(1)'
+)
+
+# Below this line, create your functions
+__ping () {
+  ping -v "$1"
+}
+
+__nmap4 () {
+  nmap -A "$1"
+}
+
+__nmap6 () {
+  nmap -A6 "$1"
+}
+
+__lesspaste () {
+  curl -s "$1" | less
+}
+
+__feh () {
+  feh "$1" &
+}
