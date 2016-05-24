@@ -14,10 +14,10 @@ shopt -s nullglob
 command -v dialog >/dev/null
 
 # get the config
-source ~/.config/cbh.rc || source @sysconfigdir@/cbh.rc.sample
+source ~/.config/ds.rc || source @sysconfigdir@/ds.rc.sample
 
 # we get the clipboard's content. Perhaps it isn't necessary here?
-_cb_content="$(xclip -o)"
+_cb_content="${1:-"$(xclip -o)"}"
 
 # we need to loop over the stuff in the config file.
 # we also need to stop at some time.
@@ -49,6 +49,7 @@ if ((${#_dialog_args[@]} > 0)); then
 
   clear
 
+  # Now, do something!
   ${_tagged_cmds["$_selection"]} "$_cb_content"
 else
   # sad dialog
