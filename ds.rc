@@ -10,18 +10,20 @@ _my_regex=( # add in here a regex to match
   "$ipv4"
   "$ipv6"
   "$ipv6"
-  '^(https?://)?(sprunge.us|ix.io)/.*$'
-  '^((ht|f)tps?://)?[^ ]*\.(jpg|png)$'
+  '^(https?://)?(sprunge.us|ix.io|ptpb.pw|pastebin.com/raw)/[^ ]*$'
+  '^((ht|f)tps?://)?[^ ]*\.(jpe?g|png)$'
+  '^(https?://)?(www\.)?youtu(\.be|be\.com)/[^ ]*$'
 )
 
 _my_cmd=( # at the same place as the regex, place a function name
           # you should prefix them by `__'
   '__ping'
-  '__namp4'
+  '__nmap4'
   '__ping'
   '__nmap6'
   '__lesspaste'
   '__feh'
+  '__youtube'
 )
 
 _my_tag=( # must be unique!
@@ -31,6 +33,7 @@ _my_tag=( # must be unique!
   'nmap6'
   'lesspaste'
   'fehonline'
+  'youtube'
 )
 
 _my_desc=(
@@ -40,25 +43,37 @@ _my_desc=(
   'nmap(1) scanner (ipv6)'
   'less(1) to read the paste'
   'feh(1)'
+  'mpv(1) for YouTube'
 )
 
 # Below this line, create your functions
+term=/usr/bin/urxvt
+shell="${SHELL:-/bin/sh}"
+
+__wrapper () {
+  "$term" -e sh -c "$* ; exec $shell";
+}
+
 __ping () {
-  ping -v "$1"
+  __wrapper ping -v "$1"
 }
 
 __nmap4 () {
-  nmap -A "$1"
+  __wrapper nmap -A "$1"
 }
 
 __nmap6 () {
-  nmap -A6 "$1"
+  __wrapper nmap -A6 "$1"
 }
 
 __lesspaste () {
-  curl -s "$1" | less
+  $term -e sh -c "curl -s \"$1\" | less"
 }
 
 __feh () {
-  feh "$1" &
+  feh "$1"
+}
+
+__youtube () {
+  mpv "$1"
 }
