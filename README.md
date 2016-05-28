@@ -8,12 +8,12 @@ of your clipboard (`xclip -o`).
 
 # How to install :
 
-put `ds` into your `$PATH`
-put `ds.rc` in `~/.config/`
+* put `ds` into your `$PATH`
+* put `ds.rc` in `~/.config/`
 
 # How to use :
 * Read and add your settings to `ds.rc`
-* Assign a binding to `$YOUR_TERM_EMULATOR -e /path/to/ds "$(xclip -o)"`
+* Assign a binding to `/path/to/ds "$(xclip -o)"`
 * Select some text with your mouse
 * Press the binding
 
