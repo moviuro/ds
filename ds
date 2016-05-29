@@ -10,8 +10,8 @@
 set -ex
 shopt -s nullglob
 
-# test if dialog is present
-command -v dialog >/dev/null
+# test if Xdialog(1) is present
+command -v Xdialog >/dev/null
 
 # get the config
 source ~/.config/ds.rc || source @sysconfigdir@/ds.rc.sample
