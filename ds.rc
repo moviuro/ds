@@ -5,14 +5,24 @@
 ipv4='^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
 ipv6='^((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(([0-9A-Fa-f]{1,4}:){0,5}:((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(::([0-9A-Fa-f]{1,4}:){0,5}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))$'
 
+# example variables
+term=/usr/bin/urxvt
+shell="${SHELL:-/bin/sh}"
+browser="google-chrome-stable"
+
 _my_regex=( # add in here a regex to match
   "$ipv4"
   "$ipv4"
   "$ipv6"
   "$ipv6"
-  '^(https?://)?(sprunge.us|ix.io|ptpb.pw|pastebin.com/raw)/[^ ]*$'
-  '^((ht|f)tps?://)?[^ ]*\.(jpe?g|png)$'
-  '^(https?://)?(www\.)?youtu(\.be|be\.com)/[^ ]*$'
+  '^((http|ftp)s?://)[^ ]*$'
+  '^[^ ]+\.git$'
+  '^(https?://)?(www\.)?(youtu(be\.com|\.be)|vimeo.com)/[^ ]+'
+  '^(https?://)?[^ ]+\.(jpe?g|png|bmp)'
+  '^(https?://)?(ptpb\.pw|sprunge\.us|ix\.io|pastebin.com/raw)/[^ ].+$'
+  '^[^ ]+\([0-9]\)$'
+  '^/[rs]/[^ ]+$'
+  '^\@[-_a-zA-Z0-9]+'
 )
 
 _my_cmd=( # at the same place as the regex, place a function name
@@ -21,9 +31,14 @@ _my_cmd=( # at the same place as the regex, place a function name
   '__nmap4'
   '__ping'
   '__nmap6'
-  '__lesspaste'
+  '__browser'
+  '__git-clone'
+  '__mpv'
   '__feh'
-  '__youtube'
+  '__curl_less'
+  '__man'
+  '__reddit'
+  '__twitter'
 )
 
 _my_tag=( # must be unique!
@@ -31,9 +46,14 @@ _my_tag=( # must be unique!
   'nmap'
   'ping6'
   'nmap6'
-  'lesspaste'
-  'fehonline'
+  "$browser"
+  'git-clone'
   'youtube'
+  'feh'
+  'curl_less'
+  'man'
+  'reddit'
+  'twitter'
 )
 
 _my_desc=(
@@ -41,14 +61,17 @@ _my_desc=(
   'nmap(1) scanner (ipv4)'
   'ping(1) IPv6'
   'nmap(1) scanner (ipv6)'
-  'less(1) to read the paste'
-  'feh(1)'
+  "$browser(1)"
+  'git-clone(1)'
   'mpv(1) for YouTube'
+  'feh(1) for pictures'
+  'curl(1) | less(1)'
+  'man(1)'
+  "$browser(1) for reddit"
+  "$browser(1) for twitter"
 )
 
 # Below this line, create your functions
-term=/usr/bin/urxvt
-shell="${SHELL:-/bin/sh}"
 
 __wrapper () {
   "$term" -e sh -c "$* ; exec $shell";
@@ -66,14 +89,42 @@ __nmap6 () {
   __wrapper nmap -A6 "$1"
 }
 
-__lesspaste () {
-  $term -e sh -c "curl -s \"$1\" | less"
+__browser () {
+  nohup "$browser" "$1" 2>&1 >/dev/null
+}
+
+__git-clone () {
+  local _project
+  _project="${1##*/}" # remove beginning of URL; looks like ${_project}.git
+  _project="${_project%\.git}" # remove end of URL; looks like ${_project}
+  __wrapper git clone "$1" ~/git/"${_project}"
+}
+
+__mpv () {
+  mpv "$1"
 }
 
 __feh () {
   feh "$1"
 }
 
-__youtube () {
-  mpv "$1"
+__curl_less () {
+  __wrapper curl -s "$1" '|' less
 }
+
+__man () {
+  local _section _page
+  _section="${1##*\(}"
+  _section="${_section%\)}"
+  _page="${1%\(*}"
+  __wrapper man "$_section" "$_page"
+}
+
+__reddit () {
+  nohup "$browser" "https://reddit.com$1" 2>&1 >/dev/null
+}
+
+__twitter () {
+  nohup "$browser" "https://twitter.com/$1" 2>&1 >/dev/null
+}
+
