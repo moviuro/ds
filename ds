@@ -10,6 +10,12 @@
 set -ex
 shopt -s nullglob
 
+# are we root?
+if [[ -w / ]]; then
+  echo "oh no, you don't!" >&2
+  exit 3
+fi
+
 # test if Xdialog(1) is present
 command -v Xdialog >/dev/null
 
