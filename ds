@@ -10,10 +10,13 @@
 set -ex
 shopt -s nullglob
 
+_exit_root=2
+_exit_nomatch=3
+
 # are we root?
 if [[ -w / ]]; then
   echo "oh no, you don't!" >&2
-  exit 3
+  exit "$_exit_root"
 fi
 
 # test if Xdialog(1) is present
@@ -65,4 +68,5 @@ elif ((${#_tagged_cmds[@]} == 1)); then
 else
   # sad dialog
   Xdialog --title ":(" --msgbox "No regex matched '$_cb_content'" 0 0
+  exit "$_exit_nomatch"
 fi
