@@ -6,9 +6,9 @@ ipv4='^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0
 ipv6='^((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(([0-9A-Fa-f]{1,4}:){0,5}:((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|(::([0-9A-Fa-f]{1,4}:){0,5}((b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b).){3}(b((25[0-5])|(1d{2})|(2[0-4]d)|(d{1,2}))b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))$'
 
 # example variables
-term=/usr/bin/urxvt
+term=/usr/bin/termite
 shell="${SHELL:-/bin/sh}"
-browser="google-chrome-stable"
+browser="luakit"
 
 _my_regex=( # add in here a regex to match
   "$ipv4"
@@ -23,6 +23,7 @@ _my_regex=( # add in here a regex to match
   '^[^ ]+\([0-9]\)$'
   '^/[rs]/[^ ]+$'
   '^\@[-_a-zA-Z0-9]+'
+	'^(https?://)?(www\.)?(twitch\.tv)/[^ ]+$'
 )
 
 _my_cmd=( # at the same place as the regex, place a function name
@@ -39,6 +40,7 @@ _my_cmd=( # at the same place as the regex, place a function name
   '__man'
   '__reddit'
   '__twitter'
+	'__mpv'
 )
 
 _my_tag=( # must be unique!
@@ -54,6 +56,7 @@ _my_tag=( # must be unique!
   'man'
   'reddit'
   'twitter'
+	'twitch'
 )
 
 _my_desc=(
@@ -69,6 +72,7 @@ _my_desc=(
   'man(1)'
   "$browser(1) for reddit"
   "$browser(1) for twitter"
+	'mpv(1) for Twitch'
 )
 
 # Below this line, create your functions
