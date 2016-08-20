@@ -23,6 +23,7 @@ _my_regex=( # add in here a regex to match
   '^[^ ]+\([0-9]\)$'
   '^/[rs]/[^ ]+$'
   '^\@[-_a-zA-Z0-9]+'
+  '^(https?://)?(www\.)?(twitch\.tv)/[^ ]+$'
 )
 
 _my_cmd=( # at the same place as the regex, place a function name
@@ -39,6 +40,7 @@ _my_cmd=( # at the same place as the regex, place a function name
   '__man'
   '__reddit'
   '__twitter'
+  '__mpv'
 )
 
 _my_tag=( # must be unique!
@@ -54,6 +56,7 @@ _my_tag=( # must be unique!
   'man'
   'reddit'
   'twitter'
+  'twitch'
 )
 
 _my_desc=(
@@ -69,6 +72,7 @@ _my_desc=(
   'man(1)'
   "$browser(1) for reddit"
   "$browser(1) for twitter"
+  'mpv(1) for Twitch'
 )
 
 # Below this line, create your functions
